@@ -1,0 +1,31 @@
+.header__body {
+  display: flex;
+  margin: 0 auto;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1171px;
+
+  nav {
+    max-width: 526px;
+    width: 100%;
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-left: 0;
+      display: flex;
+      justify-content: space-between;
+
+      a {
+        font-size: 15px;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+}
+
+.header__cart {
+  width: 31px;
+  height: 31px;
+}

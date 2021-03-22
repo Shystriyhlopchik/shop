@@ -1,0 +1,19 @@
+<div class="card" *ngIf="product">
+  <div class="card__inner">
+    <app-badge class="card__badge"
+               [setBadge]="product.badge"
+               [setDiscount]="product.price?.discount">
+    </app-badge>
+    <figure class="card__gallery">
+      <img [src]="product.image">
+    </figure>
+    <p class="card__company">{{product.company}}</p>
+    <p class="card__title">{{product.title}}</p>
+    <app-rating class="card__rates" [rating]="product.rating?.value"></app-rating>
+    <p class="card__price">{{ getPrice(product.price)| currency:"RUB":"symbol":"2.0-0"}}</p>
+    <div class="card__actions">
+      <app-button (click)="cartService.addProduct(product); $event.stopPropagation()">Добавить в корзину</app-button>
+      <app-icon></app-icon>
+    </div>
+  </div>
+</div>

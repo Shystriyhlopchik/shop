@@ -1,0 +1,31 @@
+.button {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  ::ng-deep{
+    & > * {
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      border: 1px solid #DDDDDD;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
+}
+
+.block {
+  margin-bottom: 50px;
+}
+
+header {
+  width: 100%;
+  padding: 15px 0;
+  background-color: rgba(0, 0, 0, 1);
+}
+
+footer {
+  width: 100%;
+  padding: 50px 0;
+  background-color: rgba(0, 0, 0, 1);
+}
