@@ -16,7 +16,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { DatatablePageControlModule } from "./libs/pages/catalog/components/datatable-page-control/datatable-page-control.module";
 import { CatalogInterceptor } from "./libs/pages/catalog/catalog.interceptor";
 import { LayoutsModule } from "./libs/layouts/layouts.module";
-import {CachingRequestsInterceptor} from "./services/caching-requests.interceptor";
 
 registerLocaleData(localeRu, 'ru');
 
@@ -43,13 +42,7 @@ registerLocaleData(localeRu, 'ru');
       provide: HTTP_INTERCEPTORS,
       useClass: CatalogInterceptor,
       multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: CachingRequestsInterceptor,
-      multi: true
-    }
-    ],
+    }],
   bootstrap: [AppComponent]
 })
 
