@@ -8,8 +8,13 @@ let product = products();
 server.use(middlewares);
 
 server.get('/catalog', (req, res) => {
+  if (req.query.searchTerm) {
+    let products = getSearchProduct(product.products, req.query.searchTerm);
+    let data = getData(products, 1, products);
+    res.jsonp(data);
+    return
+  }
   let pageProducts = getPageProducts(product.products, req.query.page);
-  console.log('req.query: ', req.query)
   let products = getFilterProducts(req.query, pageProducts);
   let page = getData(product.products, req.query.page, products);
   res.jsonp(page);
@@ -29,12 +34,22 @@ function getPageProducts(products, page) {
   return products.slice((Number(page)-1)*4, (Number(page)-1)*4+4);
 }
 
+// метод фильтрации по поиску
+function getSearchProduct(products, search) {
+  const tempArray = [];
+  const searchTerm = search.toLowerCase();
+  products.forEach(item => {
+    const title = item.title.toLowerCase();
+    if (title.indexOf(searchTerm) !== -1) {
+      tempArray.push(item);
+    }
+  })
+  return tempArray;
+}
 // метод фильтрации каталога
 function getFilterProducts(orderBy, products) {
   let sieve = [];
-  console.log('orderBy: ', orderBy)
   if (orderBy.orderBy == 'actionPrice') {
-    console.log('Я тут')
     products.map(item => {
       if (item.price.discount) {
         sieve.push(item);

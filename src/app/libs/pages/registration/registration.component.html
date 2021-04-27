@@ -1,0 +1,98 @@
+<main class="container" style="height: 100vh">
+  <div class="cover">
+    <div class="cover__image"></div>
+    <h1 class="cover__heading">RegExp</h1>
+  </div>
+  <div class="block">
+    <form class="form" #form="ngForm" (ngSubmit)="sendForm(form)" [ngFormOptions]="{updateOn: 'submit'}">
+      <h3>Форма регистрации</h3>
+      <fieldset class="form__fieldset">
+        <div class="form__field">
+          <input class="form__input"
+                 [ngModelOptions]="{ updateOn: 'blur' }"
+                 type="text"
+                 placeholder="Фамилия Имя"
+                 name="name"
+                 #name="ngModel"
+                 ngModel
+                 required
+                 pattern="([a-zA-Zа-яёА-ЯЁ]{1,}\s{1,}[a-zA-Zа-яёА-ЯЁ]{1,}){1,}"
+          />
+          <app-form-field
+            *ngIf="name.hasError('pattern')"
+            message="Ведите имя в формате: Иванов Иван или Ivan Ivanov"
+          ></app-form-field>
+          <app-form-field
+            *ngIf="name.hasError('required') && name.control.touched"
+            message="Это обязательное поле."
+          ></app-form-field>
+        </div>
+        <div class="form__field">
+          <input class="form__input"
+                 [ngModelOptions]="{ updateOn: 'blur' }"
+                 type="email"
+                 placeholder="E-Mail"
+                 name="email"
+                 #email="ngModel"
+                 ngModel
+                 email
+                 required
+          />
+          <app-form-field
+            *ngIf="email.hasError('email')"
+            message="e-mail в формате: sega@yandex.ru"
+          ></app-form-field>
+          <app-form-field
+            *ngIf="email.hasError('required') && email.control.touched"
+            message="Это обязательное поле"
+          ></app-form-field>
+        </div>
+        <ng-container
+          ngModelGroup="password"
+          appPasswordMatch
+          #passwordGroup = 'ngModelGroup'
+        >
+          <div class="form__field">
+            <input class="form__input"
+                   [ngModelOptions]="{ updateOn: 'blur' }"
+                   type="password"
+                   placeholder="Пароль"
+                   name="psw"
+                   #psw="ngModel"
+                   ngModel
+                   required
+                   pattern="^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$"
+            />
+            <app-form-field
+              *ngIf="passwordGroup.hasError('passwordMatch')"
+              message="Невалидный пароль"
+            ></app-form-field>
+            <app-form-field
+              *ngIf="psw.hasError('pattern')"
+              message="Пароль должен состоять минимум из восьми символов, латинских букв разного регистра, содержать минимум одну цифру и один спецсимвол."
+            ></app-form-field>
+          </div>
+          <div class="form__field">
+            <input class="form__input"
+                   [ngModelOptions]="{ updateOn: 'blur' }"
+                   type="password"
+                   placeholder="Повторить пароль"
+                   name="pswRepeat"
+                   ngModel
+                   required
+            />
+            <app-form-field
+              *ngIf="passwordGroup.hasError('passwordMatch')"
+              message="Невалидный пароль"
+            ></app-form-field>
+          </div>
+        </ng-container>
+        <button
+          [attr.disabled]="statusForm(form)"
+          class="form__button"
+          type="submit"
+        >Отправить</button>
+      </fieldset>
+    </form>
+  </div>
+</main>

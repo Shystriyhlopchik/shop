@@ -15,19 +15,4 @@ export class AppComponent implements OnInit {
 
   ngOnInit() { }
 
-  eventHandling(val?: string) {
-    if (val && (val != this.size)) {
-      this.size = val;
-    }
-  }
-
-  colorProcessing(val: string) {
-    if (val) {
-      this.color = val;
-    }
-  }
-
-  toggelFavorite() {
-    this.isFavorit = !this.isFavorit;
-  }
 }

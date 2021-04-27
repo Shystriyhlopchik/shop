@@ -1,0 +1,162 @@
+<main class="container" style="height: 100vh">
+  <div class="cover">
+    <div class="cover__image"></div>
+    <h1 class="cover__heading">RegExp</h1>
+  </div>
+  <div class="block">
+    <form class="form" [formGroup]="checkoutForm" (ngSubmit)="sendForm()">
+      <h2>Форма оформления заказа</h2>
+      <fieldset class="form__fieldset">
+        <div class="form__field">
+          <input class="form__input"
+                 type="text"
+                 placeholder="Фамилия Имя"
+                 name="name"
+                 formControlName="name"
+          />
+          <app-form-field
+            *ngIf="checkoutForm.hasError('required', 'name') && checkoutForm.controls['name'].touched"
+            message="Это обязательное поле для ввода.">
+          </app-form-field>
+          <app-form-field
+            *ngIf="checkoutForm.hasError('pattern', 'name')"
+            message="Введите в виде: Иван Иванов">
+          </app-form-field>
+        </div>
+        <div class="form__field">
+          <input class="form__input"
+                 type="tel"
+                 placeholder="Телефон"
+                 name="telephone"
+                 formControlName="tel"
+          />
+          <app-form-field
+            *ngIf="checkoutForm.hasError('required', 'tel') && checkoutForm.controls['tel'].touched"
+            message="Это обязательное поле для ввода.">
+          </app-form-field>
+          <app-form-field
+            *ngIf="checkoutForm.hasError('pattern', 'tel') && checkoutForm.controls['tel'].touched"
+            message="Не соответствует формату мобильного телефона.">
+          </app-form-field>
+        </div>
+        <section class="form__delivery">
+          <h3>Способ доставки</h3>
+          <label class="container">Самовывоз
+            <input class="container__input"
+                   type="radio"
+                   name="delivery"
+                   value="pickup"
+                   formControlName="delivery">
+            <span class="checkmark"></span>
+          </label>
+          <label class="container">Курьер
+            <input class="container__input"
+                   type="radio"
+                   name="delivery"
+                   value="courier"
+                   formControlName="delivery">
+            <span class="checkmark"></span>
+          </label>
+        </section>
+        <section *ngIf="deliveryValue"
+                 formGroupName="deliveryAddress">
+          <h3>Адрес доставки</h3>
+          <div class="form__field">
+            <input class="form__input"
+                   type="text"
+                   placeholder="Город"
+                   name="city"
+                   formControlName="city"
+            />
+            <app-form-field
+              *ngIf="checkoutForm.hasError('required', 'deliveryAddress.city') && checkoutForm.get('deliveryAddress.city')?.touched"
+              message="Это обязательное поле для ввода.">
+            </app-form-field>
+          </div>
+          <div class="form__field">
+            <input class="form__input"
+                   type="text"
+                   placeholder="Улица"
+                   name="street"
+                   formControlName="street"
+            />
+            <app-form-field
+              *ngIf="checkoutForm.hasError('required', 'deliveryAddress.street') && checkoutForm.get('deliveryAddress.street')?.touched"
+              message="Это обязательное поле для ввода.">
+            </app-form-field>
+          </div>
+          <div class="form__house">
+            <div class="form__field">
+              <input class="form__input form__house_one"
+                     type="number"
+                     placeholder="Дом"
+                     name="house"
+                     formControlName="house"
+              />
+              <app-form-field
+                *ngIf="checkoutForm.hasError('required', 'deliveryAddress.house') && checkoutForm.get('deliveryAddress.house')?.touched"
+                message="Это обязательное поле для ввода.">
+              </app-form-field>
+            </div>
+            <div class="form__field">
+              <input class="form__input form__house_one"
+                     type="number"
+                     placeholder="Под."
+                     name="entrance"
+                     formControlName="entrance"
+              />
+              <app-form-field
+                *ngIf="checkoutForm.hasError('required', 'deliveryAddress.entrance') && checkoutForm.get('deliveryAddress.entrance')?.touched"
+                message="Это обязательное поле для ввода.">
+              </app-form-field>
+            </div>
+            <div class="form__field">
+              <input class="form__input form__house_one"
+                     type="number"
+                     placeholder="Кв."
+                     name="flat"
+                     formControlName="apartment"
+              />
+              <app-form-field
+                *ngIf="checkoutForm.hasError('required', 'deliveryAddress.apartment') && checkoutForm.get('deliveryAddress.apartment')?.touched"
+                message="Это обязательное поле для ввода.">
+              </app-form-field>
+            </div>
+          </div>
+        </section>
+        <section>
+          <h3>Способ оплаты</h3>
+          <label class="container">Наличные
+            <input class="container__input"
+                   [attr.disabled]="deliveryValue ? '' : null"
+                   type="radio"
+                   formControlName="payment"
+                   value="money"
+                   name="payment">
+            <span class="checkmark"></span>
+          </label>
+          <label class="container">Картой
+            <input class="container__input"
+                   type="radio"
+                   formControlName="payment"
+                   value="card"
+                   name="payment">
+            <span class="checkmark"></span>
+          </label>
+          <label class="container">Натурой
+            <input class="container__input"
+                   type="radio"
+                   formControlName="payment"
+                   value="nature"
+                   name="payment">
+            <span class="checkmark"></span>
+          </label>
+        </section>
+        <button
+          class="form__button"
+          type="submit"
+        >Отправить</button>
+      </fieldset>
+    </form>
+  </div>
+</main>

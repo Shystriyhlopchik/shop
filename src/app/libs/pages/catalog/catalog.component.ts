@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnChanges, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { Toggle } from '../../../types/toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService } from './catalog.service';
-import { ProductsResponse } from "../../../types/catalog";
-import { Observable } from "rxjs";
-import { HttpHeaders } from "@angular/common/http";
+import { ProductsResponse } from '../../../types/catalog';
+import { fromEvent, Observable} from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
+import { debounceTime, distinctUntilChanged, pluck, switchMap, tap } from 'rxjs/operators';
 
 const buttonToggles: Array<Toggle> = [
   {value: 'none', label: 'Показать все'},
@@ -21,6 +22,17 @@ const buttonToggles: Array<Toggle> = [
           [toggles]="getToggles()"
           (changed)="applyQuery$({orderBy: $event})">
         </app-toggle>
+        <div class="page__search">
+          <input type="text" placeholder="Поиск" id="search">
+          <div *ngIf="searchResult$ | async as searchResult">
+            <ng-container *ngIf="searchResult.length > 0; else notFound">
+              <div *ngFor="let result of searchResult">{{result.title}}</div>
+            </ng-container>
+            <ng-template #notFound>
+              <div>Не найдено</div>
+            </ng-template>
+          </div>
+        </div>
       </section>
       <h2>Выбери свое чудо</h2>
       <div *ngIf="products$ | async as products">
@@ -54,6 +66,14 @@ const buttonToggles: Array<Toggle> = [
       width: 100%;
       margin: 0 auto;
     }
+
+    .page__search {
+      display: flex;
+      margin: 0 auto;
+      width: 350px;
+      flex-direction: column;
+    }
+
     .page__filter {
       width: 100%;
       background-color: rgba(251, 251, 251, 1);
@@ -96,25 +116,42 @@ const buttonToggles: Array<Toggle> = [
       margin: 100px auto;
       border: none;
     }
+
     button:focus {
       outline: none;
     }
   `]
 })
 export class CatalogComponent implements OnInit {
+  public products$: Observable<ProductsResponse> | undefined;
+  public current = 1;
+  private headers: HttpHeaders | undefined;
+  public searchResult$: Observable<any> | undefined;
   @Output() onChanged = new EventEmitter<boolean>();
   change(increased: any) {
     this.onChanged.emit(increased);
   }
-  public products$: Observable<ProductsResponse> | undefined;
-  public current: number = 1;
-  private headers: HttpHeaders | undefined;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.getProducts(params);
       this.current = params.page;
     });
+
+    const search = document.querySelector('#search');
+    if (search) {
+      this.searchResult$ = fromEvent(search, 'input').pipe(
+        pluck('target', 'value'),
+        distinctUntilChanged(),
+        debounceTime(300),
+        switchMap((searchTerm: any) => {
+          return this.searchProduct$({searchTerm});
+        }),
+        pluck('data'),
+        tap(v => console.log(v))
+      );
+    }
+    this.searchResult$?.subscribe((event) => console.log(event));
   }
 
   // метод для передачи Toggle(переключателей)
@@ -127,7 +164,7 @@ export class CatalogComponent implements OnInit {
     this.router.navigate(['.'], {
       relativeTo: this.route,
       queryParams: param,
-      queryParamsHandling: "merge"
+      queryParamsHandling: 'merge'
     });
   }
 
@@ -137,7 +174,7 @@ export class CatalogComponent implements OnInit {
 
   // метод для преобразования в строку
   public toString(val: any): string {
-    return <string>val;
+    return val as string;
   }
 
   //
@@ -145,7 +182,7 @@ export class CatalogComponent implements OnInit {
     const queryParams = {
       ...params,
       page: params.page ? params.page : '1'
-    }
+    };
     this.products$ = this.catalogService.getProducts$(queryParams, this.headers);
     this.headers = undefined;
   }
@@ -159,6 +196,12 @@ export class CatalogComponent implements OnInit {
     this.headers = new HttpHeaders().set('Button-Control', 'public');
     this.applyQuery$(param);
   }
+
+  // метод отрабатывающий по поиску
+  public searchProduct$(param: {searchTerm: string}): Observable<ProductsResponse> {
+    return this.catalogService.getProducts$(param);
+  }
+
   constructor(private router: Router, private route: ActivatedRoute,
               private catalogService: CatalogService) { }
 }

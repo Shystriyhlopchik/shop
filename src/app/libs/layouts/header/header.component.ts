@@ -8,16 +8,16 @@ import { Component, OnInit } from '@angular/core';
       <nav>
         <ul>
           <li>
-            <a routerLink="/news"
+            <a routerLink="/registration"
                routerLinkActive="active"
                [routerLinkActiveOptions]="{exact: true}"
-            >Новости</a>
+            >Регистрация</a>
           </li>
           <li>
-            <a routerLink="/about"
+            <a routerLink="/ordering"
                routerLinkActive="active"
                [routerLinkActiveOptions]="{exact: true}"
-            >О нас</a>
+            >Оформление заказа</a>
           </li>
           <li>
             <a routerLink="/contacts"
